@@ -1,4 +1,4 @@
-package hypershift
+package qe_e2e
 
 import (
 	o "github.com/onsi/gomega"

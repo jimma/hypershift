@@ -1,4 +1,4 @@
-package hypershift
+package qe_e2e
 
 import (
 	exutil "github.com/openshift/origin/test/extended/util"
