@@ -288,7 +288,11 @@ e2ev2:
 .PHONY: fmt
 fmt:
 	$(GO) fmt ./...
-
+# Build qe_e2e tests (uses -mod=mod to fetch external dependencies)
+.PHONY: qe-e2e
+qe-e2e:
+	GOPRIVATE=github.com/openshift/origin go get -u github.com/openshift/origin@main
+	CGO_ENABLED=1 GO111MODULE=on GOWORK=off GOFLAGS=-mod=mod go build $(GO_GCFLAGS) -o bin/test-qe_e2e ./test/qe_e2e
 # Run go vet against code
 .PHONY: vet
 vet:
