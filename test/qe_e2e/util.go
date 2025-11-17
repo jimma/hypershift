@@ -720,7 +720,7 @@ func waitPodReady(oc *exutil.CLI, namespace string, podName string) {
 	if err != nil {
 		podDescribe := describePod(oc, namespace, podName)
 		e2e.Logf("oc describe pod %v.", podName)
-		e2e.Logf(podDescribe)
+		e2e.Logf("%s", podDescribe)
 	}
 	compat_otp.AssertWaitPollNoErr(err, fmt.Sprintf("pod %v is not ready", podName))
 }

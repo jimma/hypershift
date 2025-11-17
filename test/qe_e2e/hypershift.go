@@ -865,7 +865,7 @@ var _ = g.Describe("[sig-hypershift] Hypershift", func() {
 		}
 
 		autoCreatedForInfra := doOcpReq(oc, OcpGet, true, "nodepool", "-n", hostedcluster.namespace, fmt.Sprintf(`-ojsonpath={.items[?(@.spec.clusterName=="%s")].metadata.labels.hypershift\.openshift\.io/auto-created-for-infra}`, hostedcluster.name))
-		e2e.Logf("autoCreatedForInfra:" + autoCreatedForInfra)
+		e2e.Logf("autoCreatedForInfra: %s", autoCreatedForInfra)
 
 		// we assume the infra is the same when creating the same hosted cluster using CLI.
 		infras := DistinctStrings(strings.Split(autoCreatedForInfra, " "))
@@ -2002,7 +2002,7 @@ data:
 		hcVersion.Pre = nil
 		minHcVersion := semver.MustParse("4.19.0")
 		if hcVersion.LT(minHcVersion) {
-			g.Skip(fmt.Sprintf("Skip the test on HostedCluster version lower than 4.19. The current HostedCluster version:", hcVersion))
+			g.Skip(fmt.Sprintf("Skip the test on HostedCluster version lower than 4.19. The current HostedCluster version: %s", hcVersion))
 		}
 		rc := hostedcluster.checkHCConditions()
 		o.Expect(rc).Should(o.BeTrue())
@@ -2129,7 +2129,7 @@ data:
 		awsInstanceID = awsInstanceIDs[len(awsInstanceIDs)-1]
 		parts = strings.Split(awsInstanceID, "/")
 		awsInstance = parts[len(parts)-1]
-		e2e.Logf("Get aws insance: %s tags : %s", awsInstance)
+		e2e.Logf("Get aws insance: %s tags", awsInstance)
 		//check aws tags
 		clusterinfra.GetAwsCredentialFromCluster(oc)
 		instanceTags, err = awsClient.DescribeTags("instance", awsInstance)

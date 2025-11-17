@@ -28,10 +28,10 @@ func newPreStartJob(name string, namespace string, caseID string, action string,
 func (p *preStartJob) create(oc *exutil.CLI) {
 	out, err := oc.AsAdmin().WithoutNamespace().Run("create").Args("secret", "generic", p.Name, "--from-file=KUBECONFIG="+os.Getenv("KUBECONFIG"), "-n", p.Namespace).Output()
 	o.Expect(err).NotTo(o.HaveOccurred())
-	e2e.Logf("create secret: " + p.Name + ", " + out)
+	e2e.Logf("create secret: %s, %s", p.Name, out)
 	out, err = oc.AsAdmin().WithoutNamespace().Run("adm").Args("policy", "add-scc-to-user", "anyuid", "-z", "default", "-n", p.Namespace).Output()
 	o.Expect(err).NotTo(o.HaveOccurred())
-	e2e.Logf("oc adm policy: " + out)
+	e2e.Logf("oc adm policy: %s", out)
 	defer compat_otp.RecoverNamespaceRestricted(oc, p.Namespace)
 	compat_otp.SetNamespacePrivileged(oc, p.Namespace)
 
@@ -70,7 +70,7 @@ func (p *preStartJob) preStartJobIP(oc *exutil.CLI) string {
 	o.Expect(err).NotTo(o.HaveOccurred())
 	log, err := compat_otp.GetSpecificPodLogs(oc, p.Namespace, "prestart", podName, `"Your nodeport address is"`)
 	o.Expect(err).NotTo(o.HaveOccurred())
-	e2e.Logf("preStartJobIP,log:" + log)
+	e2e.Logf("preStartJobIP,log: %s", log)
 
 	// regex for ip
 	numBlock := "(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])"

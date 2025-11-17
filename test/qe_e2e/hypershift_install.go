@@ -287,7 +287,7 @@ var _ = g.Describe("[sig-hypershift] Hypershift", func() {
 		for _, name := range deploymentNames {
 			value, err := oc.AsAdmin().WithoutNamespace().Run("get").Args("deployment", "-n", hostedCluster.namespace+"-"+hostedCluster.name, name, `-ojsonpath={.spec.template.spec.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[*].topologyKey}}`).Output()
 			o.Expect(err).NotTo(o.HaveOccurred())
-			e2e.Logf(fmt.Sprintf("deployment: %s: %s", name, value))
+			e2e.Logf("deployment: %s: %s", name, value)
 			o.Expect(value).Should(o.ContainSubstring("topology.kubernetes.io/zone"), fmt.Sprintf("deployment: %s lack of anti-affinity of zone", name))
 		}
 		statefulSetNames, err := hostedCluster.getHostedClustersHACPWorkloadNames("statefulset")
@@ -295,7 +295,7 @@ var _ = g.Describe("[sig-hypershift] Hypershift", func() {
 		for _, name := range statefulSetNames {
 			value, err := oc.AsAdmin().WithoutNamespace().Run("get").Args("statefulset", "-n", hostedCluster.namespace+"-"+hostedCluster.name, name, `-ojsonpath={.spec.template.spec.affinity.podAntiAffinity.requiredDuringSchedulingIgnoredDuringExecution[*].topologyKey}`).Output()
 			o.Expect(err).NotTo(o.HaveOccurred())
-			e2e.Logf(fmt.Sprintf("statefulSetNames: %s: %s", name, value))
+			e2e.Logf("statefulSetNames: %s: %s", name, value)
 			o.Expect(value).Should(o.ContainSubstring("topology.kubernetes.io/zone"), fmt.Sprintf("statefulset: %s lack of anti-affinity of zone", name))
 		}
 	})
@@ -389,7 +389,7 @@ var _ = g.Describe("[sig-hypershift] Hypershift", func() {
 		hostedCluster := installHelper.createAWSHostedClustersRender(createCluster, func(filename string) error {
 			compat_otp.By("Test NodePort Publishing Strategy")
 			ip := preStartJobSetup.preStartJobIP(oc)
-			e2e.Logf("ip:" + ip)
+			e2e.Logf("ip: %s", ip)
 			return replaceInFile(filename, "type: LoadBalancer", "type: NodePort\n      nodePort:\n        address: "+ip)
 		})
 
@@ -1122,7 +1122,7 @@ var _ = g.Describe("[sig-hypershift] Hypershift", func() {
 
 		compat_otp.By("check hosted cluster supported version")
 		supportedVersion := doOcpReq(oc, OcpGet, true, "configmap", "-n", "hypershift", "supported-versions", `-ojsonpath={.data.supported-versions}`)
-		e2e.Logf("supported version is: " + supportedVersion)
+		e2e.Logf("supported version is: %s", supportedVersion)
 
 		minSupportedVersion, err := getVersionWithMajorAndMinor(getMinSupportedOCPVersion())
 		o.Expect(err).ShouldNot(o.HaveOccurred())
@@ -1486,7 +1486,7 @@ var _ = g.Describe("[sig-hypershift] Hypershift", func() {
 					continue
 				}
 				if typedCondition.Status == metav1.ConditionTrue {
-					e2e.Logf("Found AWSDefaultSecurityGroupDeleted condition = %s", typedCondition)
+					e2e.Logf("Found AWSDefaultSecurityGroupDeleted condition = %+v", typedCondition)
 					targetConditionExpected = true
 					break outerForLoop
 				}
@@ -1695,7 +1695,7 @@ var _ = g.Describe("[sig-hypershift] Hypershift", func() {
 				})
 				// Pretty-print actual and expected NodeSelectorRequirements side-by-side for comparison in case they do not match
 				if !reflect.DeepEqual(nodeSelectorRequirements, expectedNodeSelectorRequirements) {
-					e2e.Logf(diff.ObjectGoPrintSideBySide(nodeSelectorRequirements, expectedNodeSelectorRequirements))
+					e2e.Logf("%s", diff.ObjectGoPrintSideBySide(nodeSelectorRequirements, expectedNodeSelectorRequirements))
 					e2e.Failf("Unexpected node affinity for pod")
 				}
 				e2e.Logf("Node affinity expected")
@@ -1796,7 +1796,7 @@ var _ = g.Describe("[sig-hypershift] Hypershift", func() {
 						return false, nil
 					}
 					if len(node.Spec.Taints) > 0 {
-						e2e.Logf("Worker node tainted, keep polling", node.Name)
+						e2e.Logf("Worker node %s tainted, keep polling", node.Name)
 						return false, nil
 					}
 				}
@@ -2339,7 +2339,7 @@ spec:
 						return false, nil
 					}
 					if len(node.Spec.Taints) > 0 {
-						e2e.Logf("Worker node tainted, keep polling", node.Name)
+						e2e.Logf("Worker node %s tainted, keep polling", node.Name)
 						return false, nil
 					}
 					if _, ok := node.Labels[hypershiftClusterLabelKey]; ok {
