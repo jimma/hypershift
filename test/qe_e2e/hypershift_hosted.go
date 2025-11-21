@@ -8,14 +8,18 @@ import (
 
 	g "github.com/onsi/ginkgo/v2"
 	o "github.com/onsi/gomega"
-	e2enode "k8s.io/kubernetes/test/e2e/framework/node"
 
 	compat_otp "github.com/openshift/origin/test/extended/util/compat_otp"
+	e2e "k8s.io/kubernetes/test/e2e/framework"
+	e2enode "k8s.io/kubernetes/test/e2e/framework/node"
 )
 
 var _ = g.Describe("[sig-hypershift] Hypershift", func() {
 	defer g.GinkgoRecover()
-
+	if err := compat_otp.InitTest(false); err != nil {
+		panic(err)
+	}
+	e2e.AfterReadingAllFlags(compat_otp.TestContext)
 	var (
 		oc = compat_otp.NewCLI("hypershift-hosted", compat_otp.KubeConfigPath())
 	)

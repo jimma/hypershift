@@ -13,17 +13,15 @@ import (
 	"strings"
 	"time"
 
-	g "github.com/onsi/ginkgo/v2"
-	o "github.com/onsi/gomega"
-
-	"github.com/blang/semver/v4"
-
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	awsiam "github.com/aws/aws-sdk-go/service/iam"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/sts"
+	"github.com/blang/semver/v4"
+	g "github.com/onsi/ginkgo/v2"
+	o "github.com/onsi/gomega"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -39,6 +37,10 @@ import (
 
 var _ = g.Describe("[sig-hypershift] Hypershift", func() {
 	defer g.GinkgoRecover()
+	if err := compat_otp.InitTest(false); err != nil {
+		panic(err)
+	}
+	e2e.AfterReadingAllFlags(compat_otp.TestContext)
 
 	var (
 		oc                                             = compat_otp.NewCLIForKubeOpenShift("hypershift")

@@ -28,7 +28,10 @@ import (
 
 var _ = g.Describe("[sig-hypershift] Hypershift [HyperShiftAKSINSTALL]", func() {
 	defer g.GinkgoRecover()
-
+	if err := compat_otp.InitTest(false); err != nil {
+		panic(err)
+	}
+	e2e.AfterReadingAllFlags(compat_otp.TestContext)
 	var (
 		oc         = compat_otp.NewCLIForKube("hcp-aks-install")
 		bashClient *CLI

@@ -55,7 +55,10 @@ import (
 
 var _ = g.Describe("[sig-hypershift] Hypershift", func() {
 	defer g.GinkgoRecover()
-
+	if err := compat_otp.InitTest(false); err != nil {
+		panic(err)
+	}
+	e2e.AfterReadingAllFlags(compat_otp.TestContext)
 	var (
 		oc           = compat_otp.NewCLI("hypershift-install", compat_otp.KubeConfigPath())
 		bashClient   *CLI
