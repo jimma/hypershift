@@ -53,6 +53,10 @@ func main() {
 			spec.Labels.Insert("aks")
 		}
 
+		if et.NameContains("ema-HyperShiftMGMT-Critical")(spec) {
+			spec.Labels.Insert("ema-HypershiftMGMT-Critical")
+		}
+
 		// Feature labels
 		if et.NameContains("HyperShiftMGMT")(spec) {
 			spec.Labels.Insert("hypershift-mgmt")
@@ -114,6 +118,13 @@ func main() {
 		Name: fmt.Sprintf("%s/aws", suitePrefix),
 		Qualifiers: []string{
 			`labels.exists(l, l=="aws")`,
+		},
+	})
+
+	extension.AddSuite(e.Suite{
+		Name: fmt.Sprintf("%s/jimma", suitePrefix),
+		Qualifiers: []string{
+			`labels.exists(l, l=="ema-HypershiftMGMT-Critical")`,
 		},
 	})
 
