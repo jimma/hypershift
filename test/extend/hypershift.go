@@ -57,7 +57,6 @@ var _ = g.Describe("[sig-hypershift] Hypershift", func() {
 		rc := hostedcluster.checkHCConditions()
 		o.Expect(rc).Should(o.BeTrue())
 
-		// add more test here to check hypershift util
 		operatorNS := compat_otp.GetHyperShiftOperatorNameSpace(oc)
 		e2e.Logf("hosted cluster operator namespace %s", operatorNS)
 		o.Expect(operatorNS).NotTo(o.BeEmpty())
@@ -78,6 +77,5 @@ var _ = g.Describe("[sig-hypershift] Hypershift", func() {
 		cv, err = oc.AsAdmin().SetGuestKubeconf(guestClusterKube).AsGuestKubeconf().Run("get").Args("clusterversion").Output()
 		o.Expect(err).NotTo(o.HaveOccurred())
 		e2e.Logf("hosted cluster clusterversion with noskip api name %s", cv)
-
 	})
 })

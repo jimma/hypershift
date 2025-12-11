@@ -3,21 +3,12 @@ module github.com/openshift/hypershift/test/extend
 go 1.24.4
 
 require (
-	github.com/blang/semver v3.5.1+incompatible
-	github.com/blang/semver/v4 v4.0.0
 	github.com/onsi/ginkgo/v2 v2.27.2
 	github.com/onsi/gomega v1.38.2
 	github.com/openshift-eng/openshift-tests-extension v0.0.0-20251113163031-356b66aa5c24
 	github.com/openshift/origin v1.5.0-alpha.3.0.20251203005656-6264449a6c8b
 	github.com/spf13/cobra v1.9.1
-	github.com/tidwall/gjson v1.18.0
-	go.etcd.io/etcd/client/v3 v3.6.4
-	k8s.io/api v0.34.2
-	k8s.io/apimachinery v0.34.2
-	k8s.io/apiserver v0.34.2
-	k8s.io/client-go v0.34.2
 	k8s.io/kubernetes v1.34.2
-	k8s.io/utils v0.0.0-20251002143259-bc988d571ff4
 )
 
 require (
@@ -71,6 +62,7 @@ require (
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2 // indirect
 	github.com/aws/aws-sdk-go v1.55.7 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
+	github.com/blang/semver/v4 v4.0.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/chai2010/gettext-go v1.0.2 // indirect
@@ -225,9 +217,9 @@ require (
 	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/stretchr/testify v1.11.0 // indirect
 	github.com/tecbiz-ch/nutanix-go-sdk v0.1.15 // indirect
+	github.com/tidwall/gjson v1.18.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
-	github.com/tidwall/sjson v1.2.5 // indirect
 	github.com/vmware/govmomi v0.51.0 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	github.com/xlab/treeprint v1.2.0 // indirect
@@ -235,6 +227,7 @@ require (
 	github.com/zeebo/errs v1.4.0 // indirect
 	go.etcd.io/etcd/api/v3 v3.6.4 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.6.4 // indirect
+	go.etcd.io/etcd/client/v3 v3.6.4 // indirect
 	go.mongodb.org/mongo-driver v1.17.3 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
 	go.opentelemetry.io/contrib/detectors/gcp v1.36.0 // indirect
@@ -276,8 +269,12 @@ require (
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+	k8s.io/api v0.34.2 // indirect
 	k8s.io/apiextensions-apiserver v0.34.1 // indirect
+	k8s.io/apimachinery v0.34.2 // indirect
+	k8s.io/apiserver v0.34.2 // indirect
 	k8s.io/cli-runtime v0.34.1 // indirect
+	k8s.io/client-go v0.34.2 // indirect
 	k8s.io/cloud-provider v0.31.1 // indirect
 	k8s.io/cluster-bootstrap v0.32.3 // indirect
 	k8s.io/component-base v0.34.2 // indirect
@@ -297,6 +294,7 @@ require (
 	k8s.io/mount-utils v0.26.4 // indirect
 	k8s.io/pod-security-admission v0.34.1 // indirect
 	k8s.io/sample-apiserver v0.0.0 // indirect
+	k8s.io/utils v0.0.0-20251002143259-bc988d571ff4 // indirect
 	sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.31.2 // indirect
 	sigs.k8s.io/gateway-api v1.4.0 // indirect
 	sigs.k8s.io/json v0.0.0-20250730193827-2d320260d730 // indirect
