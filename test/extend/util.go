@@ -3,12 +3,12 @@ package extend
 import (
 	g "github.com/onsi/ginkgo/v2"
 	o "github.com/onsi/gomega"
-	exutil "github.com/openshift/origin/test/extended/util"
+	"github.com/openshift/hypershift/test/extend/util"
 	e2e "k8s.io/kubernetes/test/e2e/framework"
 	"strings"
 )
 
-func doOcpReq(oc *exutil.CLI, verb OcpClientVerb, notEmpty bool, args ...string) string {
+func doOcpReq(oc *util.CLI, verb OcpClientVerb, notEmpty bool, args ...string) string {
 	g.GinkgoHelper()
 	res, err := oc.AsAdmin().WithoutNamespace().Run(verb).Args(args...).Output()
 	o.Expect(err).ShouldNot(o.HaveOccurred())

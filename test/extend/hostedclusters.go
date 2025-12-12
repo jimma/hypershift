@@ -2,18 +2,18 @@ package extend
 
 import (
 	o "github.com/onsi/gomega"
-	exutil "github.com/openshift/origin/test/extended/util"
-	"github.com/openshift/origin/test/extended/util/compat_otp"
+	"github.com/openshift/hypershift/test/extend/util"
+	"strings"
 )
 
 type hostedCluster struct {
-	oc                           *exutil.CLI
+	oc                           *util.CLI
 	namespace                    string
 	name                         string
 	hostedClustersKubeconfigFile string
 }
 
-func newHostedCluster(oc *exutil.CLI, namespace string, name string) *hostedCluster {
+func newHostedCluster(oc *util.CLI, namespace string, name string) *hostedCluster {
 	return &hostedCluster{oc: oc, namespace: namespace, name: name}
 }
 
@@ -22,7 +22,7 @@ func (h *hostedCluster) setHostedClusterKubeconfigFile(kubeconfig string) {
 }
 
 func (h *hostedCluster) checkHCConditions() bool {
-	iaasPlatform := compat_otp.CheckPlatform(h.oc)
+	iaasPlatform := CheckPlatform(h.oc)
 	res, err := h.oc.AsAdmin().WithoutNamespace().Run(OcpGet).Args("hostedcluster", h.name, "-n", h.namespace,
 		`-ojsonpath={range .status.conditions[*]}{@.type}{" "}{@.status}{" "}{end}`).Output()
 	o.Expect(err).ShouldNot(o.HaveOccurred())
@@ -42,4 +42,9 @@ func (h *hostedCluster) checkHCConditions() bool {
 				"ValidHostedControlPlaneConfiguration True", "IgnitionEndpointAvailable True", "ReconciliationActive True",
 				"ValidReleaseImage True", "ReconciliationSucceeded True"})
 	}
+}
+
+func CheckPlatform(oc *util.CLI) string {
+	output, _ := oc.AsAdmin().WithoutNamespace().Run("get").Args("infrastructure", "cluster", "-o=jsonpath={.status.platformStatus.type}").Output()
+	return strings.ToLower(output)
 }
