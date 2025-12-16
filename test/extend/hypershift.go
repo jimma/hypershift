@@ -20,6 +20,7 @@ var _ = g.Describe("[sig-hypershift] Hypershift", func() {
 		hostedclusterPlatform PlatformType
 	)
 	g.BeforeEach(func(ctx context.Context) {
+
 		oc = util.NewCLIForMonitorTest("hypershift")
 		//This is a workaround to set the testStarted=true, then it can allow invoking compat_otp.ValidHypershiftAndGetGuestKubeConf(oc)
 
