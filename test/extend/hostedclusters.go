@@ -1,31 +1,34 @@
 package extend
 
 import (
+	"context"
+	"fmt"
 	o "github.com/onsi/gomega"
+	configv1 "github.com/openshift/api/config/v1"
+	hypershiftv1beta1 "github.com/openshift/hypershift/api/hypershift/v1beta1"
 	"github.com/openshift/hypershift/test/extend/util"
+	"k8s.io/apimachinery/pkg/types"
+	crclient "sigs.k8s.io/controller-runtime/pkg/client"
 	"strings"
 )
 
-type hostedCluster struct {
-	oc                           *util.CLI
-	namespace                    string
-	name                         string
-	hostedClustersKubeconfigFile string
-}
+func checkHCConditions(ctx context.Context, c crclient.Client, hcname, hcnamespace string) bool {
+	iaasPlatform, _ := GetPlatformType(ctx, c)
 
-func newHostedCluster(oc *util.CLI, namespace string, name string) *hostedCluster {
-	return &hostedCluster{oc: oc, namespace: namespace, name: name}
-}
+	hc := &hypershiftv1beta1.HostedCluster{}
+	key := types.NamespacedName{
+		Name:      hcname,
+		Namespace: hcnamespace,
+	}
 
-func (h *hostedCluster) setHostedClusterKubeconfigFile(kubeconfig string) {
-	h.hostedClustersKubeconfigFile = kubeconfig
-}
+	if err := c.Get(ctx, key, hc); err != nil {
+		return false
+	}
 
-func (h *hostedCluster) checkHCConditions() bool {
-	iaasPlatform := CheckPlatform(h.oc)
-	res, err := h.oc.AsAdmin().WithoutNamespace().Run(OcpGet).Args("hostedcluster", h.name, "-n", h.namespace,
-		`-ojsonpath={range .status.conditions[*]}{@.type}{" "}{@.status}{" "}{end}`).Output()
-	o.Expect(err).ShouldNot(o.HaveOccurred())
+	var res []string
+	for _, cond := range hc.Status.Conditions {
+		res = append(res, fmt.Sprintf("%s %s", cond.Type, cond.Status))
+	}
 
 	if iaasPlatform == "azure" {
 		return checkSubstringWithNoExit(res,
@@ -44,7 +47,19 @@ func (h *hostedCluster) checkHCConditions() bool {
 	}
 }
 
-func CheckPlatform(oc *util.CLI) string {
-	output, _ := oc.AsAdmin().WithoutNamespace().Run("get").Args("infrastructure", "cluster", "-o=jsonpath={.status.platformStatus.type}").Output()
-	return strings.ToLower(output)
+func GetPlatformType(ctx context.Context, client crclient.Client) (string, error) {
+	infra := &configv1.Infrastructure{}
+
+	// "cluster" is the fixed name of the Infrastructure resource on OpenShift
+	err := client.Get(ctx, &client.ListOption{Name: "cluster"}, infra)
+	if err != nil {
+		return "", err
+	}
+
+	platform := ""
+	if infra.Status.PlatformStatus != nil {
+		platform = string(infra.Status.PlatformStatus.Type)
+	}
+
+	return strings.ToLower(platform), nil
 }

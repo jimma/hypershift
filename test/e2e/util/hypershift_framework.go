@@ -389,7 +389,7 @@ func (h *hypershiftTest) createHostedCluster(opts *PlatformAgnosticOptions, plat
 		}
 	}
 
-	// Build the skeletal HostedCluster based on the provided platform.
+	// Build “the skeletal HostedCluster based on the provided platform.
 	hc := &hyperv1.HostedCluster{
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: namespace.Name,
