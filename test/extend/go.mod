@@ -8,10 +8,12 @@ require (
 	github.com/blang/semver/v4 v4.0.0
 	github.com/onsi/ginkgo/v2 v2.27.2
 	github.com/onsi/gomega v1.38.2
-	github.com/openshift-eng/openshift-tests-extension v0.0.0-20251113163031-356b66aa5c24
-	github.com/openshift/hypershift/api v0.0.0-20251219173042-780f88b8979b
+	github.com/openshift-eng/openshift-tests-extension v0.0.0-20251218142942-7ecc8801b9df
+	github.com/openshift/api v0.0.0-20251204193610-68ce3d906ec8
+	github.com/openshift/hypershift/api v0.0.0-20251229083354-c1d28e31a05d
 	github.com/spf13/cobra v1.10.2
 	k8s.io/api v0.34.3
+	k8s.io/apimachinery v0.34.3
 	k8s.io/kubernetes v1.34.3
 	sigs.k8s.io/controller-runtime v0.22.4
 )
@@ -54,7 +56,6 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.3-0.20250322232337-35a7c28c31ee // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
-	github.com/openshift/api v0.0.0-20251204193610-68ce3d906ec8 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/prometheus/client_golang v1.23.2 // indirect
@@ -85,7 +86,6 @@ require (
 	gopkg.in/evanphx/json-patch.v4 v4.13.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	k8s.io/apiextensions-apiserver v0.34.2 // indirect
-	k8s.io/apimachinery v0.34.3 // indirect
 	k8s.io/apiserver v0.34.3 // indirect
 	k8s.io/client-go v0.34.3 // indirect
 	k8s.io/component-base v0.34.3 // indirect
@@ -101,6 +101,7 @@ require (
 
 replace (
 	github.com/onsi/ginkgo/v2 => github.com/openshift/onsi-ginkgo/v2 v2.6.1-0.20251001123353-fd5b1fb35db1
+//github.com/openshift/hypershift/api => ../../api
 //k8s.io/cloud-provider => github.com/openshift/kubernetes/staging/src/k8s.io/cloud-provider v0.0.0-20251017123720-96593f323733
 //k8s.io/cri-api => github.com/openshift/kubernetes/staging/src/k8s.io/cri-api v0.0.0-20251017123720-96593f323733
 //k8s.io/cri-client => github.com/openshift/kubernetes/staging/src/k8s.io/cri-client v0.0.0-20251017123720-96593f323733

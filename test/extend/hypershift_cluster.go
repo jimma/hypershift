@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 	configv1 "github.com/openshift/api/config/v1"
-	util "github.com/openshift/hypershift/test/extend/util"
-	"io/ioutil"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/types"
@@ -13,7 +11,6 @@ import (
 	"os"
 	"os/exec"
 	crcclient "sigs.k8s.io/controller-runtime/pkg/client"
-	option "sigs.k8s.io/controller-runtime/pkg/client/option"
 	"strings"
 	"time"
 
@@ -22,7 +19,6 @@ import (
 	o "github.com/onsi/gomega"
 
 	hyperv1 "github.com/openshift/hypershift/api/hypershift/v1beta1"
-	e2e "k8s.io/kubernetes/test/e2e/framework"
 )
 
 type HostedClusterPlatformType = string
@@ -41,20 +37,20 @@ func ValidHypershiftAndGetGuestKubeConf(ctx context.Context, client crcclient.Cl
 		}
 		return hostedClusterName, hostedclusterKubeconfig, hostedClusterNs
 	}*/
-	operatorNS, err := GetHyperShiftOperatorNameSpace(ctx, client)
+	operatorNS, err := GetHyperShiftOperatorNamespace(ctx, client)
 	if len(operatorNS) <= 0 {
 		g.Skip("there is no hypershift operator on host cluster, skip test run")
 	}
 
-	hostedclusterNS := GetHyperShiftHostedClusterNameSpace(ctx, client)
+	hostedclusterNS, _ := GetHyperShiftHostedClusterNamespace(ctx, client)
 	if len(hostedclusterNS) <= 0 {
 		g.Skip("there is no hosted cluster NS in mgmt cluster, skip test run")
 	}
 
 	hcList := &hyperv1.HostedClusterList{}
 
-	err = client.List(ctx, hcList, &client.ListOptions{
-		Namespace: hostedClusterNS,
+	err = client.List(ctx, hcList, &crcclient.ListOptions{
+		Namespace: hostedclusterNS,
 	})
 	o.Expect(err).NotTo(o.HaveOccurred())
 
@@ -80,10 +76,10 @@ func ValidHypershiftAndGetGuestKubeConf(ctx context.Context, client crcclient.Cl
 
 	podList := &corev1.PodList{}
 	err = client.List(ctx, podList,
-		&client.ListOptions{
+		&crcclient.ListOptions{
 			Namespace: operatorNS,
 		},
-		client.MatchingLabelsSelector{Selector: operatorSelector},
+		crcclient.MatchingLabelsSelector{Selector: operatorSelector},
 	)
 	if err != nil {
 		fmt.Errorf("failed to list operator pods: %v", err)
@@ -128,7 +124,7 @@ func ValidHypershiftAndGetGuestKubeConf(ctx context.Context, client crcclient.Cl
 		fmt.Printf("create a new hosted cluster kubeconfig: %v", hostedClusterKubeconfigFile)
 	}
 	fmt.Printf("if you want hostedcluster controlplane namespace, you could get it by combining %s and %s with -", hostedclusterNS, clusterName)
-	return clusterName, hostedClusterKubeconfigFile, hostedclusterNS
+	return hostedclusterNS, clusterName, hostedClusterKubeconfigFile
 }
 
 // ValidHypershiftAndGetGuestKubeConfWithNoSkip check if it is hypershift env and get kubeconf of the hosted cluster
@@ -137,17 +133,17 @@ func ValidHypershiftAndGetGuestKubeConf(ctx context.Context, client crcclient.Cl
 // the third return is the hostedcluster namespace in mgmt cluster which contains the generated resources
 // if it is not hypershift env, it will not skip the testcase and return null string.
 /*
-func ValidHypershiftAndGetGuestKubeConfWithNoSkip(ctx ctx context.Context, client crcclient.Client) (string, string, string) {
+func ValidHypershiftAndGetGuestKubeConfWithNoSkip(ctx context.Context, client crcclient.Client) (string, string, string) {
 	if IsROSA() {
 		e2e.Logf("there is a ROSA env")
 		return ROSAValidHypershiftAndGetGuestKubeConf(oc)
 	}
-	operatorNS, err := GetHyperShiftOperatorNameSpace(ctx context.Context)
+	operatorNS, err := GetHyperShiftOperatorNameSpace(ctx, client)
 	if len(operatorNS) <= 0 {
 		return "", "", ""
 	}
 
-	hostedclusterNS := GetHyperShiftHostedClusterNameSpace(oc)
+	hostedclusterNS := GetHyperShiftHostedClusterNameSpace(ctx,client)
 	if len(hostedclusterNS) <= 0 {
 		return "", "", ""
 	}
@@ -401,7 +397,7 @@ func IsExternalControlPlane(ctx context.Context, c crcclient.Client) bool {
 	o.Expect(err).NotTo(o.HaveOccurred())
 
 	topology := string(infra.Status.ControlPlaneTopology)
-	e2e.Logf("topology is %s", topology)
+	fmt.Printf("topology is %s", topology)
 
 	if topology == "" {
 		fmt.Printf("cluster status %+v", infra.Status)

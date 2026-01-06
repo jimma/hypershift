@@ -104,12 +104,12 @@ github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 h1:C3w9PqII01/Oq
 github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822/go.mod h1:+n7T8mK8HuQTcFwEeznm/DIxMOiR9yIdICNftLE1DvQ=
 github.com/onsi/gomega v1.38.2 h1:eZCjf2xjZAqe+LeWvKb5weQ+NcPwX84kqJ0cZNxok2A=
 github.com/onsi/gomega v1.38.2/go.mod h1:W2MJcYxRGV63b418Ai34Ud0hEdTVXq9NW9+Sx6uXf3k=
-github.com/openshift-eng/openshift-tests-extension v0.0.0-20251113163031-356b66aa5c24 h1:bwmjtFaipakIwAyZxnDLgtkLY1Nf1nK9lRCmADvHirE=
-github.com/openshift-eng/openshift-tests-extension v0.0.0-20251113163031-356b66aa5c24/go.mod h1:6gkP5f2HL0meusT0Aim8icAspcD1cG055xxBZ9yC68M=
+github.com/openshift-eng/openshift-tests-extension v0.0.0-20251218142942-7ecc8801b9df h1:/KiCxPFpkZN4HErfAX5tyhn6G3ziPFbkGswHVAZKY5Q=
+github.com/openshift-eng/openshift-tests-extension v0.0.0-20251218142942-7ecc8801b9df/go.mod h1:6gkP5f2HL0meusT0Aim8icAspcD1cG055xxBZ9yC68M=
 github.com/openshift/api v0.0.0-20251204193610-68ce3d906ec8 h1:wNa5HdUY4BZcfXMEjMMuUGg+ylaSY/etIc5cvJhlREc=
 github.com/openshift/api v0.0.0-20251204193610-68ce3d906ec8/go.mod h1:d5uzF0YN2nQQFA0jIEWzzOZ+edmo6wzlGLvx5Fhz4uY=
-github.com/openshift/hypershift/api v0.0.0-20251219173042-780f88b8979b h1:176AF/lRcctzdEKIc/v4fQ/cRgfxJCTOdBHsb5h0P9Q=
-github.com/openshift/hypershift/api v0.0.0-20251219173042-780f88b8979b/go.mod h1:dN8V9JjUjvvJaF3SJFSkb5p2H3CkjwcFDMlABEkQyuU=
+github.com/openshift/hypershift/api v0.0.0-20251229083354-c1d28e31a05d h1:67qlySvqut2Tw1dyx1kccDC2vFWQzY+SB+GZzujLq68=
+github.com/openshift/hypershift/api v0.0.0-20251229083354-c1d28e31a05d/go.mod h1:dN8V9JjUjvvJaF3SJFSkb5p2H3CkjwcFDMlABEkQyuU=
 github.com/openshift/onsi-ginkgo/v2 v2.6.1-0.20251001123353-fd5b1fb35db1 h1:PMTgifBcBRLJJiM+LgSzPDTk9/Rx4qS09OUrfpY6GBQ=
 github.com/openshift/onsi-ginkgo/v2 v2.6.1-0.20251001123353-fd5b1fb35db1/go.mod h1:7Du3c42kxCUegi0IImZ1wUQzMBVecgIHjR1C+NkhLQo=
 github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
