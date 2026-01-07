@@ -2,6 +2,7 @@ package util
 
 import (
 	"fmt"
+	configv1 "github.com/openshift/api/config/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
@@ -18,9 +19,13 @@ func GetClient() (crclient.Client, error) {
 	if err := clientgoscheme.AddToScheme(scheme); err != nil {
 		return nil, fmt.Errorf("failed to add core scheme: %w", err)
 	}
+	if err := configv1.AddToScheme(scheme); err != nil {
+		return nil, fmt.Errorf("failed to add configv1 scheme: %w", err)
+	}
 	if err := hypershiftv1beta1.AddToScheme(scheme); err != nil {
 		return nil, fmt.Errorf("failed to add hypershift scheme: %w", err)
 	}
+
 	config, err := cr.GetConfig()
 	if err != nil {
 		return nil, fmt.Errorf("unable to get kubernetes config: %w", err)
@@ -46,6 +51,9 @@ func GetClientWithConfig(guestKubeconfigFile string) (crclient.Client, error) {
 	scheme := runtime.NewScheme()
 	if err := clientgoscheme.AddToScheme(scheme); err != nil {
 		return nil, fmt.Errorf("failed to add core scheme: %w", err)
+	}
+	if err := configv1.AddToScheme(scheme); err != nil {
+		return nil, fmt.Errorf("failed to add configv1 scheme: %w", err)
 	}
 	if err := hypershiftv1beta1.AddToScheme(scheme); err != nil {
 		return nil, fmt.Errorf("failed to add hypershift scheme: %w", err)

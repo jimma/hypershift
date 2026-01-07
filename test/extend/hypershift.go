@@ -26,8 +26,10 @@ var _ = g.Describe("[sig-hypershift] Hypershift", func() {
 			fmt.Println("Error getting client")
 		}
 		client = managementClint
-		hostedClusterNs, hostedClusterName, hostedclusterKubeconfig = ValidHypershiftAndGetGuestKubeConf(ctx, client)
-
+		hostedClusterNs, hostedClusterName, hostedclusterKubeconfig, err = ValidHypershiftAndGetGuestKubeConf(ctx, client)
+		if err != nil {
+			fmt.Println("Error validating hosted cluster kubeconfig")
+		}
 		operators, err := GetOpeartors(ctx, client)
 		if len(operators) <= 0 {
 			g.Skip("hypershift operator not found, skip test run")
@@ -55,17 +57,7 @@ var _ = g.Describe("[sig-hypershift] Hypershift", func() {
 		guestClient, err := util.GetClientWithConfig(hostedclusterKubeconfig)
 		o.Expect(err).NotTo(o.HaveOccurred())
 
-		cv := GetHostedClusterVersion(ctx, guestClient, hostedClusterNs, hostedClusterName)
-		//e2e.Logf("hosted cluster clusterversion name %s", cv)
+		cv, err := GetHostedClusterVersion(ctx, guestClient, hostedClusterNs, hostedClusterName)
 		fmt.Printf("hosted cluster clusterversion name %s", cv)
-
-		/*
-			guestClusterName, guestClusterKube, _ = ValidHypershiftAndGetGuestKubeConfWithNoSkip(oc)
-			o.Expect(guestClusterName).NotTo(o.BeEmpty())
-			o.Expect(guestClusterKube).NotTo(o.BeEmpty())
-			cv, err = oc.AsAdmin().SetGuestKubeconf(guestClusterKube).AsGuestKubeconf().Run("get").Args("clusterversion").Output()
-			o.Expect(err).NotTo(o.HaveOccurred())
-		*/
-		//e2e.Logf("hosted cluster clusterversion with noskip api name %s", cv)
 	})
 })
