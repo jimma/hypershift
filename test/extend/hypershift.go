@@ -3,61 +3,62 @@ package extend
 import (
 	"context"
 	"fmt"
+	"github.com/go-logr/logr"
 	g "github.com/onsi/ginkgo/v2"
 	o "github.com/onsi/gomega"
-	"github.com/openshift/hypershift/test/extend/util"
+	. "github.com/openshift/hypershift/test/extend/util"
+	ctrl "sigs.k8s.io/controller-runtime"
 	crcclient "sigs.k8s.io/controller-runtime/pkg/client"
-	//"github.com/openshift/origin/test/extended/util/compat_otp"
-	//e2e "k8s.io/kubernetes/test/e2e/framework"
-	//compat_otp "github.com/openshift/origin/test/extended/util/compat_otp"
-	// "k8s.io/kubernetes/test/e2e/framework"
 )
 
 var _ = g.Describe("[sig-hypershift] Hypershift", func() {
 	var (
-		client                  crcclient.Client
-		hostedClusterName       string
-		hostedClusterNs         string
-		hostedclusterKubeconfig string
+		client              crcclient.Client
+		hostedClusterConfig *HostedClusterConfig
+		logger              logr.Logger
 	)
-	g.BeforeEach(func(ctx context.Context) {
-		managementClint, err := util.GetClient()
+	g.BeforeEach(func(testContext context.Context) {
+		logger = NewLogger()
+		ctx := ctrl.LoggerInto(testContext, logger)
+		var err error
+		client, err = GetClient()
 		if err != nil {
-			fmt.Println("Error getting client")
+			logger.Error(err, "Error getting client")
 		}
-		client = managementClint
-		hostedClusterNs, hostedClusterName, hostedclusterKubeconfig, err = ValidHypershiftAndGetGuestKubeConf(ctx, client)
+		hostedClusterConfig, err = ValidHypershiftAndGetGuestKubeConf(ctx, client)
 		if err != nil {
-			fmt.Println("Error validating hosted cluster kubeconfig")
+			logger.Error(err, "Error validating hosted cluster kubeconfig")
 		}
-		operators, err := GetOpeartors(ctx, client)
+		operators, err := GetOperators(ctx, client)
 		if len(operators) <= 0 {
-			g.Skip("hypershift operator not found, skip test run")
+			logger.Error(fmt.Errorf("hypershift operators are not running"), "hypershift operator not found")
 		}
-		hostedclusterPlatform, _ := GetHostedClusterPlatform(ctx, client, hostedClusterNs, hostedClusterName)
-		fmt.Printf("HostedCluster platform is: %s", hostedclusterPlatform)
+		logger.Info("HostedCluster platform", "platform", hostedClusterConfig.Platform)
 
 	})
 	// author: heli@redhat.com
-	g.It("ROSA-OSD_CCS-HyperShiftMGMT-Author:heli-Critical-42855-Check Status Conditions for HostedControlPlane", func(ctx context.Context) {
-		client, err := util.GetClient()
+	g.It("ROSA-OSD_CCS-HyperShiftMGMT-Author:heli-Critical-42855-Check Status Conditions for HostedControlPlane", func(testContext context.Context) {
+		ctx := ctrl.LoggerInto(testContext, logger)
+		client, err := GetClient()
 		o.Expect(err).NotTo(o.HaveOccurred())
-		rc := CheckHCConditions(ctx, client, hostedClusterNs, hostedClusterName)
+		rc, err := CheckHCConditions(ctx, client, hostedClusterConfig.Namespace, hostedClusterConfig.Name)
+		if err != nil {
+			logger.Error(err, "Error checking hc conditions")
+			o.Expect(err).NotTo(o.HaveOccurred())
+		}
 		o.Expect(rc).Should(o.BeTrue())
-
-		operatorNS, _ := GetHyperShiftOperatorNamespace(ctx, client)
-		//e2e.Logf("hosted cluster operator namespace %s", operatorNS)
-		o.Expect(operatorNS).NotTo(o.BeEmpty())
-
-		hostedclusterNS, err := GetHyperShiftHostedClusterNamespace(ctx, client)
+		logger.Info("HostedCluster condition check passed", "name", hostedClusterConfig.Name)
+		operatorNS, err := GetHyperShiftOperatorNamespace(ctx, client)
 		o.Expect(err).NotTo(o.HaveOccurred())
-		//e2e.Logf("hosted cluster namespace %s", hostedclusterNS)
+		o.Expect(operatorNS).NotTo(o.BeEmpty())
+		hostedclusterNS, err := GetHostedClusterNamespace(ctx, client)
+		o.Expect(err).NotTo(o.HaveOccurred())
 		o.Expect(hostedclusterNS).NotTo(o.BeEmpty())
 
-		guestClient, err := util.GetClientWithConfig(hostedclusterKubeconfig)
+		guestClient, err := GetClientWithConfig(hostedClusterConfig.Kubeconfig)
 		o.Expect(err).NotTo(o.HaveOccurred())
-
-		cv, err := GetHostedClusterVersion(ctx, guestClient, hostedClusterNs, hostedClusterName)
-		fmt.Printf("hosted cluster clusterversion name %s", cv)
+		cv, err := GetHostedClusterVersion(ctx, guestClient, hostedClusterConfig.Namespace, hostedClusterConfig.Name)
+		o.Expect(err).NotTo(o.HaveOccurred())
+		o.Expect(cv.Major).To(o.BeEquivalentTo(4))
 	})
 })
